@@ -3,22 +3,21 @@
  * @typedef {{ hour: number, minute: number }} EventClock
  * @typedef {{ year: number, month: number, day: number, clock: EventClock }} EventDateParts
  * @typedef {{ timeLabel: string, title: string, description: string }} ScheduleItem
- * @typedef {{ name: string, mapEmbedUrl: string }} Venue
- * @typedef {{ telHref: string, label: string }} RsvpPhone
+ * @typedef {{ name: string, imageSrc: string, yandexMapUrl: string }} Venue
+
  */
 
 /**
- * Central configuration — edit values here (see README for map embed and audio).
+ * Central configuration — edit values here (see README for venues and audio).
  * @type {{
  *   coupleNames: CoupleNames,
  *   heroImageSrc: string,
  *   heroInvitationText: string,
  *   eventDate: EventDateParts,
  *   heroDateDisplayHy: string,
- *   storyParagraphs: string[],
  *   scheduleItems: ScheduleItem[],
  *   venues: Venue[],
- *   rsvpPhone: RsvpPhone,
+ *   rsvpGoogleSheetUrl: string,
  *   audioSrc: string | null
  * }}
  */
@@ -37,10 +36,6 @@ const INVITATION_CONFIG = {
         clock: { hour: 15, minute: 0 }
     },
     heroDateDisplayHy: "Հունիսի 5, 2026 — ժամը 15:00",
-    storyParagraphs: [
-        "Այս տեքստը փոխարինեք Ձեր պատմությամբ։ Կարող եք ավելացնել կամ հանել պարբերություններ `storyParagraphs` զանգվածից։",
-        "Երկրորդ պարբերություն՝ ըստ ցանկության։"
-    ],
     scheduleItems: [
         {
             timeLabel: "15:00",
@@ -55,20 +50,19 @@ const INVITATION_CONFIG = {
     ],
     venues: [
         {
-            name: "Միջոցառման վայր 1 (փոխարինեք անունը)",
-            mapEmbedUrl:
-                "https://www.openstreetmap.org/export/embed.html?bbox=44.5014%2C40.1776%2C44.5186%2C40.1876&layer=mapnik&marker=40.1814%2C44.5146"
+            name: "Պսակադրություն",
+            imageSrc: "assets/images/պսակադրություն.jpg",
+            yandexMapUrl:
+                "https://yandex.com/maps/?pt=44.5146%2C40.1814&z=17&l=map"
         },
         {
-            name: "Միջոցառման վայր 2 (փոխարինեք անունը)",
-            mapEmbedUrl:
-                "https://www.openstreetmap.org/export/embed.html?bbox=44.48%2C40.165%2C44.52%2C40.195&layer=mapnik"
+            name: "Հարսանյաց Հանդես",
+            imageSrc: "assets/images/ռեստորան.jpg",
+            yandexMapUrl:
+                "https://yandex.com/maps/?ll=44.5000%2C40.1800&z=15&l=map"
         }
     ],
-    rsvpPhone: {
-        telHref: "tel:+37400000000",
-        label: "Զանգահարել (+374 …)"
-    },
+    rsvpGoogleSheetUrl: "https://script.google.com/macros/s/AKfycbzsZx-slZw1oPhre0Jg6iv73c5ylk-3tR0BED4lPBVD5-9DTwvJMUPWTVbIRN1D--0X/exec",
     audioSrc: null
 };
 
@@ -160,37 +154,17 @@ function validateVenues(venues) {
     }
     venues.forEach((venue, index) => {
         assertNonEmptyString(venue.name, `venues[${index}].name`);
-        assertNonEmptyString(venue.mapEmbedUrl, `venues[${index}].mapEmbedUrl`);
-        if (!venue.mapEmbedUrl.startsWith("https://")) {
+        assertNonEmptyString(venue.imageSrc, `venues[${index}].imageSrc`);
+        assertNonEmptyString(venue.yandexMapUrl, `venues[${index}].yandexMapUrl`);
+        if (!venue.yandexMapUrl.startsWith("https://")) {
             throw new Error(
-                `INVITATION_CONFIG: venues[${index}].mapEmbedUrl must be an https embed URL.`
+                `INVITATION_CONFIG: venues[${index}].yandexMapUrl must be an https URL.`
             );
         }
     });
 }
 
-/**
- * @param {RsvpPhone} phone
- */
-function validateRsvpPhone(phone) {
-    assertNonEmptyString(phone.telHref, "rsvpPhone.telHref");
-    assertNonEmptyString(phone.label, "rsvpPhone.label");
-    if (!phone.telHref.startsWith("tel:")) {
-        throw new Error('INVITATION_CONFIG: rsvpPhone.telHref must start with "tel:".');
-    }
-}
 
-/**
- * @param {string[]} paragraphs
- */
-function validateStoryParagraphs(paragraphs) {
-    if (!Array.isArray(paragraphs) || paragraphs.length === 0) {
-        throw new Error("INVITATION_CONFIG: storyParagraphs must be a non-empty array.");
-    }
-    paragraphs.forEach((p, index) => {
-        assertNonEmptyString(p, `storyParagraphs[${index}]`);
-    });
-}
 
 /**
  * @param {string | null} audioSrc
@@ -212,10 +186,9 @@ function validateInvitationConfig(config) {
     assertNonEmptyString(config.heroImageSrc, "heroImageSrc");
     assertNonEmptyString(config.heroInvitationText, "heroInvitationText");
     assertNonEmptyString(config.heroDateDisplayHy, "heroDateDisplayHy");
-    validateStoryParagraphs(config.storyParagraphs);
     validateScheduleItems(config.scheduleItems);
     validateVenues(config.venues);
-    validateRsvpPhone(config.rsvpPhone);
+    assertNonEmptyString(config.rsvpGoogleSheetUrl, "rsvpGoogleSheetUrl");
     validateOptionalAudioSrc(config.audioSrc);
 }
 
@@ -270,22 +243,6 @@ function startCountdown(targetDate) {
 }
 
 /**
- * @param {string[]} paragraphs
- */
-function renderStory(paragraphs) {
-    const root = document.getElementById("story-body");
-    if (!root) {
-        throw new Error("Story: #story-body not found.");
-    }
-    root.replaceChildren();
-    paragraphs.forEach((text) => {
-        const p = document.createElement("p");
-        p.textContent = text;
-        root.appendChild(p);
-    });
-}
-
-/**
  * @param {ScheduleItem[]} items
  */
 function renderSchedule(items) {
@@ -333,32 +290,201 @@ function renderVenues(venues) {
         title.className = "venue-card__title";
         title.textContent = venue.name;
 
-        const mapWrap = document.createElement("div");
-        mapWrap.className = "venue-card__map";
+        const photoWrap = document.createElement("div");
+        photoWrap.className = "venue-card__photo";
 
-        const iframe = document.createElement("iframe");
-        iframe.setAttribute("title", `${venue.name} քարտեզ`);
-        iframe.setAttribute("loading", "lazy");
-        iframe.setAttribute("referrerpolicy", "no-referrer-when-downgrade");
-        iframe.src = venue.mapEmbedUrl;
+        const img = document.createElement("img");
+        img.className = "venue-card__image";
+        img.src = venue.imageSrc;
+        img.alt = `${venue.name} \u2014 \u057E\u0561\u0575\u0580\u056B \u0576\u056F\u0561\u0580`;
+        img.setAttribute("loading", "lazy");
+        img.width = 1200;
+        img.height = 800;
 
-        mapWrap.appendChild(iframe);
+        photoWrap.appendChild(img);
+
+
+        const actions = document.createElement("div");
+        actions.className = "venue-card__actions";
+        const yandexLink = document.createElement("a");
+        yandexLink.className = "btn btn--outline venue-card__yandex";
+        yandexLink.href = venue.yandexMapUrl;
+        yandexLink.target = "_blank";
+        yandexLink.rel = "noopener noreferrer";
+        yandexLink.setAttribute(
+            "aria-label",
+            `\u053B\u0576\u0579\u057A\u0565\u057D \u0570\u0561\u057D\u0576\u0565\u056C \u2014 ${venue.name}`
+        );
+        yandexLink.textContent = "\u053B\u0576\u0579\u057A\u0565\u057D \u0570\u0561\u057D\u0576\u0565\u056C";
+
+        actions.appendChild(yandexLink);
         card.appendChild(title);
-        card.appendChild(mapWrap);
+        card.appendChild(photoWrap);
+        card.appendChild(actions);
         root.appendChild(card);
     });
 }
 
 /**
- * @param {{ telHref: string, label: string }} rsvpPhone
+ * @param {string} googleSheetUrl
  */
-function wireRsvp(rsvpPhone) {
-    const link = document.getElementById("rsvp-phone-link");
-    if (!link || !(link instanceof HTMLAnchorElement)) {
-        throw new Error("RSVP: #rsvp-phone-link not found.");
+function wireRsvpForm(googleSheetUrl) {
+    const form = document.getElementById("rsvp-form");
+    const guestsContainer = document.getElementById("rsvp-guests");
+    const addBtn = document.getElementById("rsvp-add-guest");
+    const submitBtn = document.getElementById("rsvp-submit");
+    const statusEl = document.getElementById("rsvp-status");
+
+    if (!form || !(form instanceof HTMLFormElement)) {
+        throw new Error("RSVP: #rsvp-form not found.");
     }
-    link.href = rsvpPhone.telHref;
-    link.textContent = rsvpPhone.label;
+    if (!guestsContainer || !addBtn || !submitBtn || !statusEl) {
+        throw new Error("RSVP: required DOM nodes are missing.");
+    }
+
+    /** @type {number} */
+    let guestCounter = 1;
+
+    /**
+     * @param {number} index
+     * @returns {HTMLDivElement}
+     */
+    function createGuestField(index) {
+        const field = document.createElement("div");
+        field.className = "rsvp-form__field";
+
+        const label = document.createElement("label");
+        label.setAttribute("for", "rsvp-guest-" + index);
+        label.className = "rsvp-form__label";
+        label.textContent = "Անուն ազգանուն";
+
+        const input = document.createElement("input");
+        input.type = "text";
+        input.id = "rsvp-guest-" + index;
+        input.name = "guest";
+        input.className = "rsvp-form__input";
+        input.placeholder = "Օրինակ՝ Անի Անունյան";
+        input.required = true;
+        input.autocomplete = "name";
+
+        const removeBtn = document.createElement("button");
+        removeBtn.type = "button";
+        removeBtn.className = "rsvp-form__remove-btn";
+        removeBtn.textContent = "×";
+        removeBtn.setAttribute("aria-label", "Հեռացնել");
+        removeBtn.addEventListener("click", () => {
+            field.remove();
+        });
+
+        field.appendChild(label);
+        field.appendChild(input);
+        field.appendChild(removeBtn);
+        return field;
+    }
+
+    addBtn.addEventListener("click", () => {
+        const field = createGuestField(guestCounter);
+        guestsContainer.appendChild(field);
+        const newInput = field.querySelector("input");
+        if (newInput instanceof HTMLInputElement) {
+            newInput.focus();
+        }
+        guestCounter++;
+    });
+
+    /**
+     * @param {string} message
+     * @param {"success" | "error"} type
+     */
+    function showStatus(message, type) {
+        statusEl.hidden = false;
+        statusEl.textContent = message;
+        statusEl.className = "rsvp-form__status rsvp-form__status--" + type;
+    }
+
+    function hideStatus() {
+        statusEl.hidden = true;
+        statusEl.textContent = "";
+    }
+
+    /**
+     * @param {boolean} disabled
+     */
+    function setFormDisabled(disabled) {
+        submitBtn.disabled = disabled;
+        addBtn.disabled = disabled;
+        const inputs = guestsContainer.querySelectorAll("input");
+        inputs.forEach((input) => {
+            if (input instanceof HTMLInputElement) {
+                input.disabled = disabled;
+            }
+        });
+        const removeBtns = guestsContainer.querySelectorAll(".rsvp-form__remove-btn");
+        removeBtns.forEach((btn) => {
+            if (btn instanceof HTMLButtonElement) {
+                btn.disabled = disabled;
+            }
+        });
+    }
+
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        hideStatus();
+
+        /** @type {HTMLInputElement[]} */
+        const inputs = Array.from(guestsContainer.querySelectorAll("input[name=guest]"));
+
+        inputs.forEach((input) => {
+            input.classList.remove("rsvp-form__input--error");
+        });
+
+        /** @type {string[]} */
+        const names = [];
+        /** @type {boolean} */
+        let hasError = false;
+
+        inputs.forEach((input) => {
+            const value = input.value.trim();
+            if (value.length === 0) {
+                input.classList.add("rsvp-form__input--error");
+                hasError = true;
+            } else {
+                names.push(value);
+            }
+        });
+
+        if (hasError || names.length === 0) {
+            showStatus("Խնդրում ենք լրացնել բոլոր անունները։", "error");
+            return;
+        }
+
+        setFormDisabled(true);
+        submitBtn.textContent = "Ուղարկվում է…";
+
+        try {
+            await fetch(googleSheetUrl, {
+                method: "POST",
+                mode: "no-cors",
+                body: new URLSearchParams({
+                    guests: JSON.stringify(names),
+                    timestamp: new Date().toISOString()
+                })
+            });
+
+            showStatus("Շնորհակալություն՝ Ձեր ներկայությունը հաստատված է։", "success");
+            form.reset();
+            guestsContainer.innerHTML = "";
+            const firstField = createGuestField(0);
+            firstField.querySelector(".rsvp-form__remove-btn")?.remove();
+            guestsContainer.appendChild(firstField);
+            guestCounter = 1;
+        } catch {
+            showStatus("Սխալ տեղի ունեցավ։ Խնդրում ենք նորից փորձել։", "error");
+        } finally {
+            setFormDisabled(false);
+            submitBtn.textContent = "Հաստատել";
+        }
+    });
 }
 
 /**
@@ -436,10 +562,9 @@ function initInvitationPage() {
     }
 
     applyStaticHero(INVITATION_CONFIG);
-    renderStory(INVITATION_CONFIG.storyParagraphs);
     renderSchedule(INVITATION_CONFIG.scheduleItems);
     renderVenues(INVITATION_CONFIG.venues);
-    wireRsvp(INVITATION_CONFIG.rsvpPhone);
+    wireRsvpForm(INVITATION_CONFIG.rsvpGoogleSheetUrl);
     startCountdown(targetDate);
 
     if (typeof INVITATION_CONFIG.audioSrc === "string") {

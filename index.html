@@ -6,26 +6,15 @@
     <title>Հրավիրատոմս</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Armenian:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Armenian:ital,wght@0,400;0,600;0,700;1,400&family=Noto+Sans+Armenian:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <a class="skip-link" href="#main">Անցնել բովանդակությանը</a>
 
-    <header class="site-header">
-        <nav class="nav" aria-label="Գլխավոր նավիգացիա">
-            <a href="#hero">Սկիզբ</a>
-            <a href="#story">Մեր մասին</a>
-            <a href="#schedule">Ծրագիր</a>
-            <a href="#gallery">Լուսանկարներ</a>
-            <a href="#locations">Ինչպես հասնել</a>
-            <a href="#rsvp">Հաստատել</a>
-        </nav>
-    </header>
-
     <main id="main">
         <section id="hero" class="hero" aria-labelledby="hero-title">
-            <figure class="hero__figure">
+            <div class="hero__cover">
                 <img
                     id="hero-image"
                     class="hero__image"
@@ -35,16 +24,26 @@
                     height="800"
                     fetchpriority="high"
                 >
-            </figure>
-            <div class="hero__content">
-                <h1 id="hero-title" class="hero__title">
-                    <span id="couple-name-1" class="hero__name"></span>
-                    <span class="hero__ampersand">&amp;</span>
-                    <span id="couple-name-2" class="hero__name"></span>
-                </h1>
-                <p id="hero-invitation" class="hero__invitation"></p>
-                <p id="hero-date-line" class="hero__date"></p>
+            </div>
+        </section>
 
+        <section class="section section--intro">
+            <div class="section__inner section__inner--narrow">
+                <h1 id="hero-title" class="intro__title">
+                    <span id="couple-name-1" class="intro__name"></span>
+                    <span class="intro__amp">&amp;</span>
+                    <span id="couple-name-2" class="intro__name"></span>
+                </h1>
+                <div class="divider-short"></div>
+                <p id="hero-invitation" class="intro__text"></p>
+                <p id="hero-date-line" class="intro__date"></p>
+            </div>
+        </section>
+
+        <div class="divider-line"></div>
+
+        <section class="section section--countdown">
+            <div class="section__inner section__inner--narrow">
                 <div class="countdown" aria-live="polite">
                     <p class="countdown__label">Հետհաշվարկ մինչև մեր օրը</p>
                     <div class="countdown__grid" id="countdown-root">
@@ -78,19 +77,16 @@
             </div>
         </section>
 
-        <section id="story" class="section section--story" aria-labelledby="story-heading">
-            <div class="section__inner">
-                <h2 id="story-heading" class="section__title">Մեր պատմությունը</h2>
-                <div id="story-body" class="story-body"></div>
-            </div>
-        </section>
+        <div class="divider-line"></div>
 
         <section id="schedule" class="section section--schedule" aria-labelledby="schedule-heading">
-            <div class="section__inner">
+            <div class="section__inner section__inner--narrow">
                 <h2 id="schedule-heading" class="section__title">Ծրագիր</h2>
                 <ol id="schedule-list" class="schedule-list"></ol>
             </div>
         </section>
+
+        <div class="divider-line"></div>
 
         <section id="gallery" class="section section--gallery" aria-labelledby="gallery-heading">
             <div class="section__inner">
@@ -119,19 +115,45 @@
             </div>
         </section>
 
+        <div class="divider-line"></div>
+
         <section id="locations" class="section section--locations" aria-labelledby="locations-heading">
-            <div class="section__inner">
+            <div class="section__inner section__inner--narrow">
                 <h2 id="locations-heading" class="section__title">Ինչպես հասնել</h2>
                 <p class="section__lead">Քարտեզները կօգնեն արագ գտնել միջոցառման վայրերը։</p>
                 <div id="venues-root" class="venues"></div>
             </div>
         </section>
 
+        <div class="divider-line"></div>
+
         <section id="rsvp" class="section section--rsvp" aria-labelledby="rsvp-heading">
             <div class="section__inner section__inner--narrow">
                 <h2 id="rsvp-heading" class="section__title">Հաստատել ներկայությունը</h2>
-                <p class="section__lead">Զանգահարեք մեզ՝ հաստատելու համար։</p>
-                <a id="rsvp-phone-link" class="btn btn--primary" href="#">Զանգահարել</a>
+                <p class="section__lead">Խնդրում ենք լրացնել Ձեր անունը (կամ անունները) և հաստատել ներկայությունը։</p>
+                <form id="rsvp-form" class="rsvp-form" novalidate>
+                    <div id="rsvp-guests" class="rsvp-form__guests">
+                        <div class="rsvp-form__field">
+                            <label for="rsvp-guest-0" class="rsvp-form__label">Անուն ազգանուն</label>
+                            <input
+                                type="text"
+                                id="rsvp-guest-0"
+                                name="guest"
+                                class="rsvp-form__input"
+                                placeholder="Օրինակ՝ Անի Անունյան"
+                                required
+                                autocomplete="name"
+                            >
+                        </div>
+                    </div>
+                    <button type="button" id="rsvp-add-guest" class="rsvp-form__add-btn">
+                        + Ավելացնել ևս մեկ հյուր
+                    </button>
+                    <button type="submit" id="rsvp-submit" class="btn btn--outline rsvp-form__submit">
+                        Հաստատել
+                    </button>
+                    <p id="rsvp-status" class="rsvp-form__status" hidden></p>
+                </form>
             </div>
         </section>
     </main>
