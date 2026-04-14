@@ -2,7 +2,7 @@
  * @typedef {{ partner1: string, partner2: string }} CoupleNames
  * @typedef {{ hour: number, minute: number }} EventClock
  * @typedef {{ year: number, month: number, day: number, clock: EventClock }} EventDateParts
- * @typedef {{ timeLabel: string, title: string, description: string }} ScheduleItem
+ * @typedef {{ timeLabel: string, title: string, description: string, timeIconSrc?: string | null }} ScheduleItem
  * @typedef {{ name: string, imageSrc: string, yandexMapUrl: string }} Venue
 
  */
@@ -28,7 +28,7 @@ const INVITATION_CONFIG = {
     },
     heroImageSrc: "assets/images/hero.jpg",
     heroInvitationText:
-        "Սիրով հրավիրում ենք մասնակցելու մեր հարսանիքին։ Ուրախ կլինենք եթե այս օրը անցկացնեք մեզ հետ",
+        "Սիրով հրավիրում ենք մասնակցելու մեր հարսանիքին։ Ուրախ կլինենք, եթե այս օրը անցկացնեք մեզ հետ։",
     eventDate: {
         year: 2026,
         month: 6,
@@ -38,14 +38,16 @@ const INVITATION_CONFIG = {
     heroDateDisplayHy: "Հունիսի 5, 2026 — ժամը 15:00",
     scheduleItems: [
         {
-            timeLabel: "15:00",
-            title: "Հանդիսություն",
-            description: "Տեղ՝ լրացրեք վայրը։"
+            timeLabel: "14:00",
+            title: "Պսակադրություն",
+            description: "Տեղ՝ Լիաննա Գարդեն Հոլի շրջակա այգի։",
+            timeIconSrc: "assets/images/schedule-rings.png"
         },
         {
             timeLabel: "18:00",
-            title: "Ճաշ",
-            description: "Մանրամասները՝ ըստ ցանկության։"
+            title: "Հարսանյաց Հանդես",
+            description: "Տեղ՝ Լիաննա Գարդեն Հոլ ռեստորան։",
+            timeIconSrc: "assets/images/schedule-toast.png"
         }
     ],
     venues: [
@@ -142,6 +144,12 @@ function validateScheduleItems(items) {
         assertNonEmptyString(item.timeLabel, `scheduleItems[${index}].timeLabel`);
         assertNonEmptyString(item.title, `scheduleItems[${index}].title`);
         assertNonEmptyString(item.description, `scheduleItems[${index}].description`);
+        if (item.timeIconSrc !== undefined && item.timeIconSrc !== null) {
+            assertNonEmptyString(
+                item.timeIconSrc,
+                `scheduleItems[${index}].timeIconSrc`
+            );
+        }
     });
 }
 
@@ -253,11 +261,31 @@ function renderSchedule(items) {
     list.replaceChildren();
     items.forEach((item) => {
         const li = document.createElement("li");
+        const timeCell = document.createElement("div");
+        timeCell.className = "schedule-list__time-cell";
+
         const timeSpan = document.createElement("span");
         timeSpan.className = "schedule-list__time";
         timeSpan.textContent = item.timeLabel;
+        timeCell.appendChild(timeSpan);
+
+        if (
+            typeof item.timeIconSrc === "string" &&
+            item.timeIconSrc.trim().length > 0
+        ) {
+            const icon = document.createElement("img");
+            icon.className = "schedule-list__time-icon";
+            icon.src = item.timeIconSrc;
+            icon.alt = "";
+            icon.setAttribute("aria-hidden", "true");
+            icon.width = 96;
+            icon.height = 96;
+            icon.setAttribute("loading", "lazy");
+            timeCell.appendChild(icon);
+        }
 
         const body = document.createElement("div");
+        body.className = "schedule-list__body";
         const title = document.createElement("p");
         title.className = "schedule-list__title";
         title.textContent = item.title;
@@ -267,7 +295,7 @@ function renderSchedule(items) {
         body.appendChild(title);
         body.appendChild(desc);
 
-        li.appendChild(timeSpan);
+        li.appendChild(timeCell);
         li.appendChild(body);
         list.appendChild(li);
     });

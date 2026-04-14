@@ -85,20 +85,25 @@ body {
 
 .intro__title {
     margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: baseline;
     font-family: var(--font-heading);
-    font-weight: 400;
-    font-size: clamp(2rem, 6vw, 3.5rem);
+    font-weight: 200;
+    font-size: clamp(4.2rem, 12vw, 7.5rem);
     line-height: 1.2;
     color: var(--color-ink);
+    white-space: nowrap;
+    gap: 0.3em;
 }
 
 .intro__name {
-    display: block;
+    display: inline;
 }
 
 .intro__amp {
-    display: block;
-    margin: var(--space-xs) 0;
+    display: inline;
+    margin: 0;
     font-style: italic;
     font-size: 0.7em;
     color: var(--color-muted);
@@ -113,10 +118,19 @@ body {
 
 .intro__text {
     margin: 0 auto var(--space-md);
-    max-width: var(--max-narrow);
-    font-size: 1rem;
-    line-height: 1.8;
-    color: var(--color-muted);
+    max-width: 56ch;
+    font-family: var(--font-heading);
+    font-size: clamp(1.7rem, 4.2vw, 2.7rem);
+    font-weight: 100;
+    line-height: 1.7;
+    letter-spacing: 0.02em;
+    text-align: center;
+    color: #3a2721;
+    padding: 0;
+    background: transparent;
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
 }
 
 .intro__date {
@@ -186,21 +200,38 @@ body {
 .countdown__label {
     margin: 0 0 var(--space-md);
     font-family: var(--font-heading);
-    font-size: 1.1rem;
+    font-size: 3.4rem;
+    font-weight: 200;
     color: var(--color-ink);
 }
 
 .countdown__grid {
+    --countdown-gap: var(--space-lg);
     display: flex;
     justify-content: center;
-    gap: var(--space-lg);
+    align-items: center;
+    gap: var(--countdown-gap);
 }
 
 .countdown__unit {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.25rem;
+}
+
+.countdown__unit:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    left: calc(100% + var(--countdown-gap) / 2);
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 1px;
+    height: clamp(2rem, 6vw, 3rem);
+    background-color: var(--color-muted);
+    opacity: 0.45;
+    pointer-events: none;
 }
 
 .countdown__value {
@@ -280,13 +311,33 @@ body {
     border-top: 1px solid var(--color-border);
 }
 
+.schedule-list__time-cell {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    flex-shrink: 0;
+}
+
+.schedule-list__time-icon {
+    width: 2.25rem;
+    height: 2.25rem;
+    object-fit: contain;
+    display: block;
+    flex-shrink: 0;
+}
+
 .schedule-list__time {
     flex-shrink: 0;
-    width: 4.5rem;
+    min-width: 4.5rem;
     font-family: var(--font-heading);
     font-weight: 600;
     font-variant-numeric: tabular-nums;
     color: var(--color-ink);
+}
+
+.schedule-list__body {
+    flex: 1;
+    min-width: 0;
 }
 
 .schedule-list__title {
@@ -302,21 +353,90 @@ body {
     color: var(--color-muted);
 }
 
-/* ── Gallery ── */
+
+.section--schedule {
+    padding-top: var(--space-2xl);
+    padding-bottom: var(--space-2xl);
+    box-sizing: border-box;
+    width: 100%;
+    max-width: min(96vw, 1180px);
+    margin-inline: auto;
+}
+
+.section--schedule .section__title {
+    font-size: clamp(2.8rem, 5.6vw, 4.1rem);
+    font-weight: 200;
+    margin-bottom: calc(var(--space-lg) * 1.15);
+}
+
+.section--schedule .schedule-list li {
+    gap: var(--space-lg);
+    padding: var(--space-lg) 0;
+}
+
+.section--schedule .schedule-list__time-cell {
+    gap: 0.35rem;
+}
+
+.section--schedule .schedule-list__time {
+    min-width: 9rem;
+    font-size: 1.87rem;
+    font-weight: 300;
+}
+
+.section--schedule .schedule-list__time-icon {
+    width: 4.5rem;
+    height: 4.5rem;
+    margin-left: -0.55rem;
+}
+
+.section--schedule .schedule-list__title {
+    font-size: 1.965rem;
+    font-weight: 300;
+}
+
+.section--schedule .schedule-list__desc {
+    font-size: 1.68rem;
+    font-weight: 400;
+}
+
+/* ── Gallery (մեկ գիծ, ավտոմատ թերթում, լրիվ լայնություն) ── */
 
 .section--gallery {
     background: var(--color-bg);
+    padding-left: 0;
+    padding-right: 0;
 }
 
-.gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: var(--space-sm);
+.section__inner--gallery-head {
+    padding-left: var(--space-md);
+    padding-right: var(--space-md);
+}
+
+.gallery-marquee {
+    width: 100%;
+    overflow: hidden;
+    padding-block: var(--space-xs);
+}
+
+.gallery-marquee__track {
+    display: flex;
+    width: max-content;
+    animation: gallery-marquee-step 22s ease-in-out infinite;
+}
+
+.gallery-marquee__group {
+    display: flex;
+    flex-shrink: 0;
+    gap: var(--space-md);
+    padding-inline: calc(var(--space-sm) * 0.5);
 }
 
 .gallery-item {
     margin: 0;
     overflow: hidden;
+    flex: 0 0 auto;
+    width: min(420px, 88vw);
     background: #f7f7f7;
     line-height: 0;
 }
@@ -326,12 +446,43 @@ body {
     width: 100%;
     height: auto;
     object-fit: cover;
-    aspect-ratio: 4 / 3;
+    aspect-ratio: 4 / 5.475;
     transition: transform 0.4s ease;
 }
 
 .gallery-item:hover img {
     transform: scale(1.05);
+}
+
+/* Կարճ շարժում, երկար դադար; վեց քայլ = մեկ կռքնօռինակ շարք (-50%)։ */
+@keyframes gallery-marquee-step {
+    0%,
+    14.583% {
+        transform: translateX(0);
+    }
+    16.667%,
+    31.25% {
+        transform: translateX(calc(-50% / 6));
+    }
+    33.333%,
+    47.917% {
+        transform: translateX(calc(-50% / 6 * 2));
+    }
+    50%,
+    64.583% {
+        transform: translateX(calc(-50% / 6 * 3));
+    }
+    66.667%,
+    81.25% {
+        transform: translateX(calc(-50% / 6 * 4));
+    }
+    83.333%,
+    97.917% {
+        transform: translateX(calc(-50% / 6 * 5));
+    }
+    100% {
+        transform: translateX(-50%);
+    }
 }
 
 /* ── Venues ── */
@@ -541,7 +692,7 @@ body {
 
 @media (max-width: 520px) {
     .countdown__grid {
-        gap: var(--space-md);
+        --countdown-gap: var(--space-md);
     }
 
     .schedule-list li {
@@ -549,14 +700,19 @@ body {
         gap: var(--space-xs);
     }
 
-    .gallery-grid {
-        grid-template-columns: 1fr;
-    }
 }
 
 @media (prefers-reduced-motion: reduce) {
     html {
         scroll-behavior: auto;
+    }
+
+    .gallery-marquee {
+        overflow-x: auto;
+    }
+
+    .gallery-marquee__track {
+        animation: none;
     }
 
     .gallery-item img {

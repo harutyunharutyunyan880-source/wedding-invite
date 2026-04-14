@@ -6,7 +6,7 @@
     <title>Հրավիրատոմս</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Armenian:ital,wght@0,400;0,600;0,700;1,400&family=Noto+Sans+Armenian:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Armenian:ital,wght@0,100;0,200;0,300;0,400;0,600;0,700;1,400&family=Noto+Sans+Armenian:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -31,7 +31,7 @@
             <div class="section__inner section__inner--narrow">
                 <h1 id="hero-title" class="intro__title">
                     <span id="couple-name-1" class="intro__name"></span>
-                    <span class="intro__amp">&amp;</span>
+                    <span class="intro__amp">և</span>
                     <span id="couple-name-2" class="intro__name"></span>
                 </h1>
                 <div class="divider-short"></div>
@@ -45,7 +45,7 @@
         <section class="section section--countdown">
             <div class="section__inner section__inner--narrow">
                 <div class="countdown" aria-live="polite">
-                    <p class="countdown__label">Հետհաշվարկ մինչև մեր օրը</p>
+                    <p class="countdown__label">Հարսանիքին մնացել է</p>
                     <div class="countdown__grid" id="countdown-root">
                         <div class="countdown__unit">
                             <span class="countdown__value" id="cd-days">00</span>
@@ -80,39 +80,58 @@
         <div class="divider-line"></div>
 
         <section id="schedule" class="section section--schedule" aria-labelledby="schedule-heading">
-            <div class="section__inner section__inner--narrow">
-                <h2 id="schedule-heading" class="section__title">Ծրագիր</h2>
-                <ol id="schedule-list" class="schedule-list"></ol>
-            </div>
+            <h2 id="schedule-heading" class="section__title">Ծրագիր</h2>
+            <ol id="schedule-list" class="schedule-list"></ol>
         </section>
 
-        <div class="divider-line"></div>
-
         <section id="gallery" class="section section--gallery" aria-labelledby="gallery-heading">
-            <div class="section__inner">
+            <div class="section__inner section__inner--gallery-head">
                 <h2 id="gallery-heading" class="section__title">Լուսանկարներ</h2>
-                <p class="section__lead">Փոխարինեք նկարները <code>assets/images/</code> պանակում՝ պահելով նույն ֆայլերի անունները։</p>
-                <div class="gallery-grid">
-                    <figure class="gallery-item">
-                        <img src="assets/images/gallery-01.jpg" alt="Հարսանյաց լուսանկար 1" width="800" height="600" loading="lazy">
-                    </figure>
-                    <figure class="gallery-item">
-                        <img src="assets/images/gallery-02.jpg" alt="Հարսանյաց լուսանկար 2" width="800" height="600" loading="lazy">
-                    </figure>
-                    <figure class="gallery-item">
-                        <img src="assets/images/gallery-03.jpg" alt="Հարսանյաց լուսանկար 3" width="800" height="600" loading="lazy">
-                    </figure>
-                    <figure class="gallery-item">
-                        <img src="assets/images/gallery-04.jpg" alt="Հարսանյաց լուսանկար 4" width="800" height="600" loading="lazy">
-                    </figure>
-                    <figure class="gallery-item">
-                        <img src="assets/images/gallery-05.jpg" alt="Հարսանյաց լուսանկար 5" width="800" height="600" loading="lazy">
-                    </figure>
-                    <figure class="gallery-item">
-                        <img src="assets/images/gallery-06.jpg" alt="Հարսանյաց լուսանկար 6" width="800" height="600" loading="lazy">
-                    </figure>
-                </div>
             </div>
+            <div class="gallery-marquee" role="region" aria-label="Լուսանկարների շարք">
+                    <div class="gallery-marquee__track">
+                        <div class="gallery-marquee__group">
+                            <figure class="gallery-item">
+                                <img src="assets/images/gallery-01.jpg" alt="Հարսանյաց լուսանկար 1" width="800" height="600" loading="lazy">
+                            </figure>
+                            <figure class="gallery-item">
+                                <img src="assets/images/gallery-02.jpg" alt="Հարսանյաց լուսանկար 2" width="800" height="600" loading="lazy">
+                            </figure>
+                            <figure class="gallery-item">
+                                <img src="assets/images/gallery-03.jpg" alt="Հարսանյաց լուսանկար 3" width="800" height="600" loading="lazy">
+                            </figure>
+                            <figure class="gallery-item">
+                                <img src="assets/images/gallery-04.jpg" alt="Հարսանյաց լուսանկար 4" width="800" height="600" loading="lazy">
+                            </figure>
+                            <figure class="gallery-item">
+                                <img src="assets/images/gallery-05.jpg" alt="Հարսանյաց լուսանկար 5" width="800" height="600" loading="lazy">
+                            </figure>
+                            <figure class="gallery-item">
+                                <img src="assets/images/gallery-06.jpg" alt="Հարսանյաց լուսանկար 6" width="800" height="600" loading="lazy">
+                            </figure>
+                        </div>
+                        <div class="gallery-marquee__group" aria-hidden="true">
+                            <figure class="gallery-item">
+                                <img src="assets/images/gallery-01.jpg" alt="" width="800" height="600" loading="lazy">
+                            </figure>
+                            <figure class="gallery-item">
+                                <img src="assets/images/gallery-02.jpg" alt="" width="800" height="600" loading="lazy">
+                            </figure>
+                            <figure class="gallery-item">
+                                <img src="assets/images/gallery-03.jpg" alt="" width="800" height="600" loading="lazy">
+                            </figure>
+                            <figure class="gallery-item">
+                                <img src="assets/images/gallery-04.jpg" alt="" width="800" height="600" loading="lazy">
+                            </figure>
+                            <figure class="gallery-item">
+                                <img src="assets/images/gallery-05.jpg" alt="" width="800" height="600" loading="lazy">
+                            </figure>
+                            <figure class="gallery-item">
+                                <img src="assets/images/gallery-06.jpg" alt="" width="800" height="600" loading="lazy">
+                            </figure>
+                        </div>
+                    </div>
+                </div>
         </section>
 
         <div class="divider-line"></div>
