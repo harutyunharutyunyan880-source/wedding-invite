@@ -750,6 +750,18 @@ body {
 /* ── Responsive ── */
 
 @media (max-width: 520px) {
+    /* Full viewport height feels too tall on phones; keep photo readable without dominating the scroll. */
+    .hero {
+        height: 70vh;
+        min-height: 300px;
+    }
+
+    @supports (height: 70dvh) {
+        .hero {
+            height: 70dvh;
+        }
+    }
+
     .countdown__grid {
         --countdown-gap: var(--space-md);
         display: grid;
