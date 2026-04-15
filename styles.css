@@ -57,10 +57,17 @@ body {
 .hero {
     position: relative;
     width: 100%;
+    /* Avoid mobile browser chrome stretching/cropping the cover (100vh is unreliable). */
     height: 100vh;
     min-height: 400px;
     overflow: hidden;
     background: #8c857b;
+}
+
+@supports (height: 100dvh) {
+    .hero {
+        height: 100dvh;
+    }
 }
 
 .hero__cover {
@@ -86,6 +93,7 @@ body {
 .intro__title {
     margin: 0;
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: baseline;
     font-family: var(--font-heading);
@@ -93,8 +101,10 @@ body {
     font-size: clamp(4.2rem, 12vw, 7.5rem);
     line-height: 1.2;
     color: var(--color-ink);
-    white-space: nowrap;
+    white-space: normal;
+    text-wrap: balance;
     gap: 0.3em;
+    max-width: 100%;
 }
 
 .intro__name {
@@ -200,9 +210,11 @@ body {
 .countdown__label {
     margin: 0 0 var(--space-md);
     font-family: var(--font-heading);
-    font-size: 3.4rem;
+    font-size: clamp(1.85rem, 8.5vw, 3.4rem);
     font-weight: 200;
     color: var(--color-ink);
+    line-height: 1.15;
+    padding-inline: var(--space-xs);
 }
 
 .countdown__grid {
@@ -693,6 +705,50 @@ body {
 @media (max-width: 520px) {
     .countdown__grid {
         --countdown-gap: var(--space-md);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        justify-content: stretch;
+        align-items: stretch;
+        column-gap: var(--space-md);
+        row-gap: var(--space-lg);
+        max-width: 22rem;
+        margin-inline: auto;
+    }
+
+    /* Vertical bars between units assume one row; in 2×2 they misalign — remove. */
+    .countdown__unit:not(:last-child)::after {
+        content: none;
+    }
+
+    .countdown__unit {
+        padding: var(--space-sm);
+        border: 1px solid var(--color-border);
+        border-radius: 12px;
+    }
+
+    .section--intro {
+        padding: var(--space-xl) var(--space-md);
+    }
+
+    .intro__title {
+        font-size: clamp(2.35rem, 11vw, 4.2rem);
+    }
+
+    .section--schedule .schedule-list__time {
+        min-width: 0;
+        font-size: clamp(1.35rem, 5.5vw, 1.87rem);
+    }
+
+    .section--schedule .schedule-list__time-icon {
+        width: clamp(2.5rem, 14vw, 4.5rem);
+        height: clamp(2.5rem, 14vw, 4.5rem);
+        margin-left: 0;
+    }
+
+    .section--schedule .schedule-list__time-cell {
+        flex-wrap: wrap;
+        justify-content: center;
+        text-align: center;
     }
 
     .schedule-list li {
