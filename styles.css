@@ -1,6 +1,7 @@
 :root {
-    --color-bg: #ffffff;
-    --color-surface: #ffffff;
+    /* Warm paper tone so JPEG assets (e.g. calendar) blend instead of boxing against pure #fff. */
+    --color-bg: #f9f8f6;
+    --color-surface: #f9f8f6;
     --color-ink: #1e1e1e;
     --color-muted: #656565;
     --color-border: rgba(30, 30, 30, 0.25);
@@ -105,6 +106,9 @@ body {
 .section--intro {
     padding: var(--space-2xl) var(--space-md);
     text-align: center;
+    background-color: var(--color-bg);
+    /* Contain mix-blend-mode on the calendar to this section (not the hero). */
+    isolation: isolate;
 }
 
 .intro__title {
@@ -170,7 +174,8 @@ body {
     border: 0;
     border-radius: 0;
     box-shadow: none;
-    filter: contrast(1.14) brightness(1.04);
+    /* Knock near-white JPEG background into --color-bg; keeps black text readable. */
+    mix-blend-mode: multiply;
 }
 
 /* ── Divider Lines ── */

@@ -26,7 +26,7 @@ const INVITATION_CONFIG = {
     },
     heroImageSrc: "assets/images/hero.jpg",
     heroInvitationText:
-        "Սիրով հրավիրում ենք մասնակցելու մեր հարսանիքին։ Ուրախ կլինենք, եթե այս օրը անցկացնեք մեզ հետ։",
+        "Սիրով հրավիրումենք Ձեզ մեր հարսանիքին, և ուրախ կլինենք, եթե այս երջանիկ օրը անցկացնեք մեզ հետ՝ նվիրելով Ձեր ներկայությունը։",
     heroCalendarImageSrc: "assets/images/օրացույց.jpg",
     eventDate: {
         year: 2026,
