@@ -104,11 +104,6 @@
 
         <div class="divider-line"></div>
 
-        <section id="schedule" class="section section--schedule" aria-labelledby="schedule-heading">
-            <h2 id="schedule-heading" class="section__title">Ծրագիր</h2>
-            <ol id="schedule-list" class="schedule-list"></ol>
-        </section>
-
         <section id="gallery" class="section section--gallery" aria-labelledby="gallery-heading">
             <div class="section__inner section__inner--gallery-head">
                 <h2 id="gallery-heading" class="section__title">Լուսանկարներ</h2>
@@ -159,6 +154,11 @@
                 </div>
         </section>
 
+        <section id="schedule" class="section section--schedule" aria-labelledby="schedule-heading">
+            <h2 id="schedule-heading" class="section__title">Ծրագիր</h2>
+            <ol id="schedule-list" class="schedule-list"></ol>
+        </section>
+
         <div class="divider-line"></div>
 
         <section id="locations" class="section section--locations" aria-labelledby="locations-heading">
@@ -169,12 +169,12 @@
             </div>
         </section>
 
-        <div class="divider-line"></div>
-
         <section id="rsvp" class="section section--rsvp" aria-labelledby="rsvp-heading">
             <div class="section__inner section__inner--narrow">
-                <h2 id="rsvp-heading" class="section__title">Հաստատել ներկայությունը</h2>
-                <p class="section__lead">Խնդրում ենք լրացնել Ձեր անունը (կամ անունները) և հաստատել ներկայությունը։</p>
+                <h2 id="rsvp-heading" class="section__title">
+                    Շնորհակալ կլինենք եթե նախապես հաստատեք Ձեր ներկայությունը։<br>
+                    Կսպասենք Ձեր պատասխանին մինչև 20.05.2026
+                </h2>
                 <form id="rsvp-form" class="rsvp-form" novalidate>
                     <div id="rsvp-guests" class="rsvp-form__guests">
                         <div class="rsvp-form__field">
@@ -184,7 +184,6 @@
                                 id="rsvp-guest-0"
                                 name="guest"
                                 class="rsvp-form__input"
-                                placeholder="Օրինակ՝ Անի Անունյան"
                                 required
                                 autocomplete="name"
                             >
@@ -201,10 +200,6 @@
             </div>
         </section>
     </main>
-
-    <footer class="site-footer">
-        <p>Հրավիրատոմսը պատրաստված է Ձեր համար։</p>
-    </footer>
 
     <script src="script.js"></script>
 </body>

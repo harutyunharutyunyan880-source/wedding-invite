@@ -2,13 +2,12 @@
  * @typedef {{ partner1: string, partner2: string }} CoupleNames
  * @typedef {{ hour: number, minute: number }} EventClock
  * @typedef {{ year: number, month: number, day: number, clock: EventClock }} EventDateParts
- * @typedef {{ timeLabel: string, title: string, description: string, timeIconSrc?: string | null }} ScheduleItem
- * @typedef {{ name: string, imageSrc: string, yandexMapUrl: string }} Venue
+ * @typedef {{ timeLabel: string, title: string, description: string, yandexMapUrl: string, timeIconSrc?: string | null }} ScheduleItem
 
  */
 
 /**
- * Central configuration — edit values here (see README for venues and audio).
+ * Central configuration — edit values here (see README for audio).
  * @type {{
  *   coupleNames: CoupleNames,
  *   heroImageSrc: string,
@@ -16,7 +15,6 @@
  *   heroCalendarImageSrc: string,
  *   eventDate: EventDateParts,
  *   scheduleItems: ScheduleItem[],
- *   venues: Venue[],
  *   rsvpGoogleSheetUrl: string,
  *   audioSrc: string | null
  * }}
@@ -40,28 +38,18 @@ const INVITATION_CONFIG = {
         {
             timeLabel: "14:00",
             title: "Պսակադրություն",
-            description: "Տեղ՝ Լիաննա Գարդեն Հոլի շրջակա այգի։",
+            description: "Լիաննա Գարդեն Հոլի շրջակա այգի։",
+            yandexMapUrl:
+                "https://yandex.com/maps/org/75872747374/?ll=44.391408%2C40.164666&z=17",
             timeIconSrc: "assets/images/schedule-rings.png"
         },
         {
             timeLabel: "18:00",
             title: "Հարսանյաց Հանդես",
-            description: "Տեղ՝ Լիաննա Գարդեն Հոլ ռեստորան։",
+            description: "Լիաննա Գարդեն Հոլ ռեստորան։",
+            yandexMapUrl:
+                "https://yandex.com/maps/org/75872747374/?ll=44.391408%2C40.164666&z=17",
             timeIconSrc: "assets/images/schedule-toast.png"
-        }
-    ],
-    venues: [
-        {
-            name: "Պսակադրություն",
-            imageSrc: "assets/images/պսակադրություն.jpg",
-            yandexMapUrl:
-                "https://yandex.com/maps/?pt=44.5146%2C40.1814&z=17&l=map"
-        },
-        {
-            name: "Հարսանյաց Հանդես",
-            imageSrc: "assets/images/ռեստորան.jpg",
-            yandexMapUrl:
-                "https://yandex.com/maps/?ll=44.5000%2C40.1800&z=15&l=map"
         }
     ],
     rsvpGoogleSheetUrl: "https://script.google.com/macros/s/AKfycbzsZx-slZw1oPhre0Jg6iv73c5ylk-3tR0BED4lPBVD5-9DTwvJMUPWTVbIRN1D--0X/exec",
@@ -144,6 +132,12 @@ function validateScheduleItems(items) {
         assertNonEmptyString(item.timeLabel, `scheduleItems[${index}].timeLabel`);
         assertNonEmptyString(item.title, `scheduleItems[${index}].title`);
         assertNonEmptyString(item.description, `scheduleItems[${index}].description`);
+        assertNonEmptyString(item.yandexMapUrl, `scheduleItems[${index}].yandexMapUrl`);
+        if (!item.yandexMapUrl.startsWith("https://")) {
+            throw new Error(
+                `INVITATION_CONFIG: scheduleItems[${index}].yandexMapUrl must be an https URL.`
+            );
+        }
         if (item.timeIconSrc !== undefined && item.timeIconSrc !== null) {
             assertNonEmptyString(
                 item.timeIconSrc,
@@ -152,27 +146,6 @@ function validateScheduleItems(items) {
         }
     });
 }
-
-/**
- * @param {Venue[]} venues
- */
-function validateVenues(venues) {
-    if (!Array.isArray(venues) || venues.length === 0) {
-        throw new Error("INVITATION_CONFIG: venues must be a non-empty array.");
-    }
-    venues.forEach((venue, index) => {
-        assertNonEmptyString(venue.name, `venues[${index}].name`);
-        assertNonEmptyString(venue.imageSrc, `venues[${index}].imageSrc`);
-        assertNonEmptyString(venue.yandexMapUrl, `venues[${index}].yandexMapUrl`);
-        if (!venue.yandexMapUrl.startsWith("https://")) {
-            throw new Error(
-                `INVITATION_CONFIG: venues[${index}].yandexMapUrl must be an https URL.`
-            );
-        }
-    });
-}
-
-
 
 /**
  * @param {string | null} audioSrc
@@ -195,7 +168,6 @@ function validateInvitationConfig(config) {
     assertNonEmptyString(config.heroInvitationText, "heroInvitationText");
     assertNonEmptyString(config.heroCalendarImageSrc, "heroCalendarImageSrc");
     validateScheduleItems(config.scheduleItems);
-    validateVenues(config.venues);
     assertNonEmptyString(config.rsvpGoogleSheetUrl, "rsvpGoogleSheetUrl");
     validateOptionalAudioSrc(config.audioSrc);
 }
@@ -295,61 +267,18 @@ function renderSchedule(items) {
         body.appendChild(title);
         body.appendChild(desc);
 
+        const mapLink = document.createElement("a");
+        mapLink.className = "btn btn--outline";
+        mapLink.href = item.yandexMapUrl;
+        mapLink.target = "_blank";
+        mapLink.rel = "noopener noreferrer";
+        mapLink.setAttribute("aria-label", `Քարտեզ — ${item.title}`);
+        mapLink.textContent = "Քարտեզ";
+        body.appendChild(mapLink);
+
         li.appendChild(timeCell);
         li.appendChild(body);
         list.appendChild(li);
-    });
-}
-
-/**
- * @param {Venue[]} venues
- */
-function renderVenues(venues) {
-    const root = document.getElementById("venues-root");
-    if (!root) {
-        throw new Error("Venues: #venues-root not found.");
-    }
-    root.replaceChildren();
-    venues.forEach((venue) => {
-        const card = document.createElement("article");
-        card.className = "venue-card";
-
-        const title = document.createElement("h3");
-        title.className = "venue-card__title";
-        title.textContent = venue.name;
-
-        const photoWrap = document.createElement("div");
-        photoWrap.className = "venue-card__photo";
-
-        const img = document.createElement("img");
-        img.className = "venue-card__image";
-        img.src = venue.imageSrc;
-        img.alt = `${venue.name} \u2014 \u057E\u0561\u0575\u0580\u056B \u0576\u056F\u0561\u0580`;
-        img.setAttribute("loading", "lazy");
-        img.width = 1200;
-        img.height = 800;
-
-        photoWrap.appendChild(img);
-
-
-        const actions = document.createElement("div");
-        actions.className = "venue-card__actions";
-        const yandexLink = document.createElement("a");
-        yandexLink.className = "btn btn--outline venue-card__yandex";
-        yandexLink.href = venue.yandexMapUrl;
-        yandexLink.target = "_blank";
-        yandexLink.rel = "noopener noreferrer";
-        yandexLink.setAttribute(
-            "aria-label",
-            `\u053B\u0576\u0579\u057A\u0565\u057D \u0570\u0561\u057D\u0576\u0565\u056C \u2014 ${venue.name}`
-        );
-        yandexLink.textContent = "\u053B\u0576\u0579\u057A\u0565\u057D \u0570\u0561\u057D\u0576\u0565\u056C";
-
-        actions.appendChild(yandexLink);
-        card.appendChild(title);
-        card.appendChild(photoWrap);
-        card.appendChild(actions);
-        root.appendChild(card);
     });
 }
 
@@ -391,7 +320,6 @@ function wireRsvpForm(googleSheetUrl) {
         input.id = "rsvp-guest-" + index;
         input.name = "guest";
         input.className = "rsvp-form__input";
-        input.placeholder = "Օրինակ՝ Անի Անունյան";
         input.required = true;
         input.autocomplete = "name";
 
@@ -601,11 +529,15 @@ function wireMusic(audioSrc) {
  * @param {typeof INVITATION_CONFIG} config
  */
 function applyStaticHero(config) {
+    const heroSection = document.getElementById("hero");
     const heroImage = document.getElementById("hero-image");
     const n1 = document.getElementById("couple-name-1");
     const n2 = document.getElementById("couple-name-2");
     const invitation = document.getElementById("hero-invitation");
     const calendarImage = document.getElementById("hero-calendar-image");
+    if (!heroSection || !(heroSection instanceof HTMLElement)) {
+        throw new Error("Hero: #hero not found.");
+    }
     if (!heroImage || !(heroImage instanceof HTMLImageElement)) {
         throw new Error("Hero: #hero-image not found.");
     }
@@ -618,6 +550,7 @@ function applyStaticHero(config) {
     ) {
         throw new Error("Hero: required DOM nodes are missing.");
     }
+    heroSection.style.setProperty("--hero-bg-image", `url("${config.heroImageSrc}")`);
     heroImage.src = config.heroImageSrc;
     heroImage.alt = `${config.coupleNames.partner1} և ${config.coupleNames.partner2} — հարսանյաց լուսանկար`;
     n1.textContent = config.coupleNames.partner1;
@@ -637,7 +570,7 @@ function initInvitationPage() {
 
     applyStaticHero(INVITATION_CONFIG);
     renderSchedule(INVITATION_CONFIG.scheduleItems);
-    renderVenues(INVITATION_CONFIG.venues);
+    document.getElementById("locations")?.remove();
     wireRsvpForm(INVITATION_CONFIG.rsvpGoogleSheetUrl);
     startCountdown(targetDate);
 
