@@ -266,45 +266,85 @@ body {
     color: var(--color-muted);
 }
 
-/* ── Music Block ── */
+/* ── Music (fixed top-right) ── */
 
-.music-block {
-    margin-top: var(--space-xl);
-    text-align: center;
+.music-dock {
+    position: fixed;
+    top: max(var(--space-sm), env(safe-area-inset-top, 0px));
+    right: max(var(--space-sm), env(safe-area-inset-right, 0px));
+    z-index: 60;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: var(--space-xs);
+    max-width: min(100vw - 2rem, 16rem);
+    pointer-events: none;
 }
 
-.music-block__label {
-    margin: 0 0 var(--space-sm);
-    font-size: 0.95rem;
-    color: var(--color-ink);
+.music-dock > * {
+    pointer-events: auto;
 }
 
-.music-block__btn {
-    font-family: inherit;
-    font-size: 0.75rem;
-    font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    padding: 14px 32px;
-    border-radius: 100px;
+.music-dock__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    padding: 0;
+    border-radius: 50%;
     border: 1px solid var(--color-ink);
-    background: transparent;
+    background: rgba(255, 255, 255, 0.92);
     color: var(--color-ink);
     cursor: pointer;
-    transition: background 0.2s, color 0.2s;
+    box-shadow: 0 2px 12px rgba(30, 30, 30, 0.12);
+    backdrop-filter: blur(6px);
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
 }
 
-.music-block__btn:hover,
-.music-block__btn:focus-visible {
+.music-dock__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.35rem;
+    height: 1.35rem;
+}
+
+.music-dock__icon svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.music-dock__icon--pause {
+    display: none;
+}
+
+.music-dock__btn--playing .music-dock__icon--play {
+    display: none;
+}
+
+.music-dock__btn--playing .music-dock__icon--pause {
+    display: flex;
+}
+
+.music-dock__btn:hover,
+.music-dock__btn:focus-visible {
     background: var(--color-ink);
     color: var(--color-bg);
     outline: none;
 }
 
-.music-block__error {
-    margin: var(--space-sm) 0 0;
-    font-size: 0.875rem;
+.music-dock__error {
+    margin: 0;
+    padding: var(--space-xs) var(--space-sm);
+    font-size: 0.8125rem;
+    line-height: 1.4;
     color: #a94442;
+    text-align: right;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 /* ── Schedule ── */

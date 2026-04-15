@@ -12,6 +12,30 @@
 <body>
     <a class="skip-link" href="#main">Անցնել բովանդակությանը</a>
 
+    <div id="music-dock" class="music-dock" hidden role="region" aria-label="Ֆոնային երաժշտություն">
+        <button
+            type="button"
+            id="music-toggle"
+            class="music-dock__btn"
+            aria-pressed="false"
+            aria-label="Միացնել երաժշտությունը"
+        >
+            <span class="music-dock__icon music-dock__icon--play" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="24" height="24" focusable="false">
+                    <polygon points="7,5 7,19 19,12" fill="currentColor" />
+                </svg>
+            </span>
+            <span class="music-dock__icon music-dock__icon--pause" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="24" height="24" focusable="false">
+                    <rect x="6" y="5" width="4" height="14" rx="1" fill="currentColor" />
+                    <rect x="14" y="5" width="4" height="14" rx="1" fill="currentColor" />
+                </svg>
+            </span>
+        </button>
+        <p id="music-error" class="music-dock__error" hidden></p>
+        <audio id="bg-audio" preload="auto" loop></audio>
+    </div>
+
     <main id="main">
         <section id="hero" class="hero" aria-labelledby="hero-title">
             <div class="hero__cover">
@@ -75,14 +99,6 @@
                     </div>
                 </div>
 
-                <div id="music-block" class="music-block" hidden>
-                    <p class="music-block__label">Ֆոնային երաժշտություն</p>
-                    <button type="button" id="music-toggle" class="music-block__btn" aria-pressed="false">
-                        Միացնել
-                    </button>
-                    <p id="music-error" class="music-block__error" hidden></p>
-                </div>
-                <audio id="bg-audio" preload="none" loop></audio>
             </div>
         </section>
 

@@ -65,7 +65,7 @@ const INVITATION_CONFIG = {
         }
     ],
     rsvpGoogleSheetUrl: "https://script.google.com/macros/s/AKfycbzsZx-slZw1oPhre0Jg6iv73c5ylk-3tR0BED4lPBVD5-9DTwvJMUPWTVbIRN1D--0X/exec",
-    audioSrc: null
+    audioSrc: "assets/audio/wedding.mp3"
 };
 
 /**
@@ -519,19 +519,19 @@ function wireRsvpForm(googleSheetUrl) {
  * @param {string} audioSrc
  */
 function wireMusic(audioSrc) {
-    const block = document.getElementById("music-block");
+    const dock = document.getElementById("music-dock");
     const toggle = document.getElementById("music-toggle");
     const audio = document.getElementById("bg-audio");
     const errEl = document.getElementById("music-error");
 
-    if (!block || !toggle || !audio || !errEl) {
+    if (!dock || !toggle || !audio || !errEl) {
         throw new Error("Music: required DOM nodes are missing.");
     }
     if (!(toggle instanceof HTMLButtonElement) || !(audio instanceof HTMLAudioElement)) {
         throw new Error("Music: invalid element types.");
     }
 
-    block.hidden = false;
+    dock.hidden = false;
     audio.src = audioSrc;
 
     const showError = (message) => {
@@ -539,23 +539,62 @@ function wireMusic(audioSrc) {
         errEl.textContent = message;
     };
 
+    const syncUiFromAudio = () => {
+        const playing = !audio.paused;
+        toggle.classList.toggle("music-dock__btn--playing", playing);
+        toggle.setAttribute("aria-pressed", playing ? "true" : "false");
+        toggle.setAttribute(
+            "aria-label",
+            playing ? "Անջատել երաժշտությունը" : "Միացնել երաժշտությունը"
+        );
+    };
+
+    audio.addEventListener("play", syncUiFromAudio);
+    audio.addEventListener("pause", syncUiFromAudio);
+
+    const tryAutoplay = async () => {
+        if (!audio.paused) {
+            return;
+        }
+        errEl.hidden = true;
+        try {
+            await audio.play();
+        } catch {
+            /* Autoplay often blocked until user gesture; no error banner. */
+        }
+        syncUiFromAudio();
+    };
+
+    void tryAutoplay();
+    audio.addEventListener(
+        "loadeddata",
+        () => {
+            void tryAutoplay();
+        },
+        { once: true }
+    );
+
+    const unlockPlaybackOnce = () => {
+        void tryAutoplay();
+    };
+    document.addEventListener("pointerdown", unlockPlaybackOnce, { capture: true, once: true });
+
     toggle.addEventListener("click", async () => {
         errEl.hidden = true;
         try {
             if (audio.paused) {
                 await audio.play();
-                toggle.textContent = "Կանգնեցնել";
-                toggle.setAttribute("aria-pressed", "true");
             } else {
                 audio.pause();
-                toggle.textContent = "Միացնել";
-                toggle.setAttribute("aria-pressed", "false");
             }
         } catch {
             showError("Ձեր դիտարկիչը չի աջակցում աուդիո նվագարկմանը կամ ֆայլը բացակայում է։");
-            toggle.setAttribute("aria-pressed", "false");
+            audio.pause();
+            syncUiFromAudio();
         }
     });
+
+    syncUiFromAudio();
 }
 
 /**
