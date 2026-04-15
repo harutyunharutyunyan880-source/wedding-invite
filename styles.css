@@ -143,13 +143,17 @@ body {
     box-shadow: none;
 }
 
-.intro__date {
-    margin: 0;
-    font-family: var(--font-heading);
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--color-ink);
-    letter-spacing: 0.05em;
+.intro__calendar {
+    display: block;
+    /* Bleed into section horizontal padding so the calendar uses the full intro column width. */
+    width: calc(100% + 2 * var(--space-md));
+    max-width: none;
+    height: auto;
+    margin: var(--space-lg) calc(-1 * var(--space-md)) var(--space-md);
+    border: 0;
+    border-radius: 0;
+    box-shadow: none;
+    filter: contrast(1.14) brightness(1.04);
 }
 
 /* ── Divider Lines ── */

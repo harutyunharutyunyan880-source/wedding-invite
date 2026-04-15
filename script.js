@@ -13,8 +13,8 @@
  *   coupleNames: CoupleNames,
  *   heroImageSrc: string,
  *   heroInvitationText: string,
+ *   heroCalendarImageSrc: string,
  *   eventDate: EventDateParts,
- *   heroDateDisplayHy: string,
  *   scheduleItems: ScheduleItem[],
  *   venues: Venue[],
  *   rsvpGoogleSheetUrl: string,
@@ -29,13 +29,13 @@ const INVITATION_CONFIG = {
     heroImageSrc: "assets/images/hero.jpg",
     heroInvitationText:
         "Սիրով հրավիրում ենք մասնակցելու մեր հարսանիքին։ Ուրախ կլինենք, եթե այս օրը անցկացնեք մեզ հետ։",
+    heroCalendarImageSrc: "assets/images/օրացույց.jpg",
     eventDate: {
         year: 2026,
         month: 6,
         day: 5,
         clock: { hour: 15, minute: 0 }
     },
-    heroDateDisplayHy: "Հունիսի 5, 2026 — ժամը 15:00",
     scheduleItems: [
         {
             timeLabel: "14:00",
@@ -193,7 +193,7 @@ function validateInvitationConfig(config) {
     validateCoupleNames(config.coupleNames);
     assertNonEmptyString(config.heroImageSrc, "heroImageSrc");
     assertNonEmptyString(config.heroInvitationText, "heroInvitationText");
-    assertNonEmptyString(config.heroDateDisplayHy, "heroDateDisplayHy");
+    assertNonEmptyString(config.heroCalendarImageSrc, "heroCalendarImageSrc");
     validateScheduleItems(config.scheduleItems);
     validateVenues(config.venues);
     assertNonEmptyString(config.rsvpGoogleSheetUrl, "rsvpGoogleSheetUrl");
@@ -566,11 +566,17 @@ function applyStaticHero(config) {
     const n1 = document.getElementById("couple-name-1");
     const n2 = document.getElementById("couple-name-2");
     const invitation = document.getElementById("hero-invitation");
-    const dateLine = document.getElementById("hero-date-line");
+    const calendarImage = document.getElementById("hero-calendar-image");
     if (!heroImage || !(heroImage instanceof HTMLImageElement)) {
         throw new Error("Hero: #hero-image not found.");
     }
-    if (!n1 || !n2 || !invitation || !dateLine) {
+    if (
+        !n1 ||
+        !n2 ||
+        !invitation ||
+        !calendarImage ||
+        !(calendarImage instanceof HTMLImageElement)
+    ) {
         throw new Error("Hero: required DOM nodes are missing.");
     }
     heroImage.src = config.heroImageSrc;
@@ -578,7 +584,8 @@ function applyStaticHero(config) {
     n1.textContent = config.coupleNames.partner1;
     n2.textContent = config.coupleNames.partner2;
     invitation.textContent = config.heroInvitationText;
-    dateLine.textContent = config.heroDateDisplayHy;
+    calendarImage.src = config.heroCalendarImageSrc;
+    calendarImage.alt = "Ապրիլ ամսվա օրացույց՝ նշված է հարսանյաց ամսաթիվը";
 }
 
 function initInvitationPage() {

@@ -23,8 +23,8 @@
 | `coupleNames` | Երկու անուն |
 | `heroImageSrc` | Հերոյի վերևի լուսանկարի ուղի (օր. `assets/images/hero.jpg`) |
 | `heroInvitationText` | Անուններից հետո ցուցադրվող հրավերի տեքստը |
+| `heroCalendarImageSrc` | Հրավերի տեքստից հետո՝ օրացույցի նկարի ուղի |
 | `eventDate` | Տարին, ամիսը (1–12), օրը, ժամը (`hour` 0–23, `minute` 0–59) — հետհաշվարկը հաշվում է **տեղական** ժամացույցով |
-| `heroDateDisplayHy` | Հրավերի տեքստից հետո՝ ամսաթիվ/ժամի տողը |
 | `scheduleItems` | Ժամ, վերնագիր, նկարագրություն |
 | `venues` | Յուրաքանչյուրի `name`, `imageSrc` (լուսանկարի ուղի), `yandexMapUrl` (Yandex քարտեզի https հղում) |
 | `rsvpPhone` | `telHref`՝ `tel:+374XXXXXXXX` ձևաչափ, `label`՝ կոճակի տեքստ |
