@@ -170,13 +170,7 @@ body {
     border: 0;
     border-radius: 0;
     box-shadow: none;
-}
-
-/* Stronger punch on large screens only: full-image brightness reads as a “white card” on phones. */
-@media (min-width: 1024px) {
-    .intro__calendar {
-        filter: contrast(1.14) brightness(1.04);
-    }
+    mix-blend-mode: multiply;
 }
 
 /* ── Divider Lines ── */
