@@ -173,14 +173,41 @@
                     Կսպասենք Ձեր պատասխանին մինչև 20.05.2026
                 </h2>
                 <form id="rsvp-form" class="rsvp-form" novalidate>
+                    <fieldset class="rsvp-form__side" aria-label="Հարսիկի կողմ կամ Փեսայի կողմ">
+                        <div class="rsvp-form__side-options">
+                            <label class="rsvp-form__radio-label">
+                                <input
+                                    type="radio"
+                                    name="rsvp-side"
+                                    id="rsvp-side-groom"
+                                    class="rsvp-form__radio"
+                                    value="groom"
+                                    required
+                                >
+                                <span>Փեսայի կողմ</span>
+                            </label>
+                            <label class="rsvp-form__radio-label">
+                                <input
+                                    type="radio"
+                                    name="rsvp-side"
+                                    id="rsvp-side-bride"
+                                    class="rsvp-form__radio"
+                                    value="bride"
+                                    required
+                                >
+                                <span>Հարսիկի կողմ</span>
+                            </label>
+                        </div>
+                    </fieldset>
                     <div id="rsvp-guests" class="rsvp-form__guests">
                         <div class="rsvp-form__field">
-                            <label for="rsvp-guest-0" class="rsvp-form__label">Անուն ազգանուն</label>
+                            <label for="rsvp-guest-0" class="rsvp-form__label">Անուն Ազգանուն</label>
                             <input
                                 type="text"
                                 id="rsvp-guest-0"
                                 name="guest"
                                 class="rsvp-form__input"
+                                placeholder="Անուն Ազգանուն"
                                 required
                                 autocomplete="name"
                             >

@@ -15,7 +15,7 @@
  *   heroCalendarImageSrc: string,
  *   eventDate: EventDateParts,
  *   scheduleItems: ScheduleItem[],
- *   rsvpGoogleSheetUrl: string,
+ *   rsvpGoogleSheetUrls: { groom: string, bride: string },
  *   audioSrc: string | null
  * }}
  */
@@ -36,7 +36,7 @@ const INVITATION_CONFIG = {
     },
     scheduleItems: [
         {
-            timeLabel: "14:00",
+            timeLabel: "16:00",
             title: "Պսակադրություն",
             description: "Լիաննա Գարդեն Հոլի շրջակա այգի։",
             yandexMapUrl:
@@ -44,7 +44,7 @@ const INVITATION_CONFIG = {
             timeIconSrc: "assets/images/schedule-rings.png"
         },
         {
-            timeLabel: "18:00",
+            timeLabel: "17:30",
             title: "Հարսանյաց Հանդես",
             description: "Լիաննա Գարդեն Հոլ ռեստորան։",
             yandexMapUrl:
@@ -52,7 +52,12 @@ const INVITATION_CONFIG = {
             timeIconSrc: "assets/images/schedule-toast.png"
         }
     ],
-    rsvpGoogleSheetUrl: "https://script.google.com/macros/s/AKfycbzsZx-slZw1oPhre0Jg6iv73c5ylk-3tR0BED4lPBVD5-9DTwvJMUPWTVbIRN1D--0X/exec",
+    rsvpGoogleSheetUrls: {
+        groom:
+            "https://script.google.com/macros/s/AKfycbzsZx-slZw1oPhre0Jg6iv73c5ylk-3tR0BED4lPBVD5-9DTwvJMUPWTVbIRN1D--0X/exec",
+        bride:
+            "https://script.google.com/macros/s/AKfycbw0PJNtNIdjt93-15OYxEnLrtSAS0-d50lbiL7EqSOyM8FhCn71reXXjqDE8Q2MwBFu/exec"
+    },
     audioSrc: "assets/audio/wedding.mp3"
 };
 
@@ -168,7 +173,8 @@ function validateInvitationConfig(config) {
     assertNonEmptyString(config.heroInvitationText, "heroInvitationText");
     assertNonEmptyString(config.heroCalendarImageSrc, "heroCalendarImageSrc");
     validateScheduleItems(config.scheduleItems);
-    assertNonEmptyString(config.rsvpGoogleSheetUrl, "rsvpGoogleSheetUrl");
+    assertNonEmptyString(config.rsvpGoogleSheetUrls.groom, "rsvpGoogleSheetUrls.groom");
+    assertNonEmptyString(config.rsvpGoogleSheetUrls.bride, "rsvpGoogleSheetUrls.bride");
     validateOptionalAudioSrc(config.audioSrc);
 }
 
@@ -283,9 +289,9 @@ function renderSchedule(items) {
 }
 
 /**
- * @param {string} googleSheetUrl
+ * @param {{ groom: string, bride: string }} sheetUrls
  */
-function wireRsvpForm(googleSheetUrl) {
+function wireRsvpForm(sheetUrls) {
     const form = document.getElementById("rsvp-form");
     const guestsContainer = document.getElementById("rsvp-guests");
     const addBtn = document.getElementById("rsvp-add-guest");
@@ -313,13 +319,14 @@ function wireRsvpForm(googleSheetUrl) {
         const label = document.createElement("label");
         label.setAttribute("for", "rsvp-guest-" + index);
         label.className = "rsvp-form__label";
-        label.textContent = "Անուն ազգանուն";
+        label.textContent = "Անուն Ազգանուն";
 
         const input = document.createElement("input");
         input.type = "text";
         input.id = "rsvp-guest-" + index;
         input.name = "guest";
         input.className = "rsvp-form__input";
+        input.placeholder = "Անուն Ազգանուն";
         input.required = true;
         input.autocomplete = "name";
 
@@ -369,6 +376,12 @@ function wireRsvpForm(googleSheetUrl) {
     function setFormDisabled(disabled) {
         submitBtn.disabled = disabled;
         addBtn.disabled = disabled;
+        const sideInputs = form.querySelectorAll('input[name="rsvp-side"]');
+        sideInputs.forEach((input) => {
+            if (input instanceof HTMLInputElement) {
+                input.disabled = disabled;
+            }
+        });
         const inputs = guestsContainer.querySelectorAll("input");
         inputs.forEach((input) => {
             if (input instanceof HTMLInputElement) {
@@ -394,6 +407,26 @@ function wireRsvpForm(googleSheetUrl) {
             input.classList.remove("rsvp-form__input--error");
         });
 
+        const sideFieldset = form.querySelector(".rsvp-form__side");
+        if (sideFieldset instanceof HTMLElement) {
+            sideFieldset.classList.remove("rsvp-form__side--error");
+        }
+
+        const sideInput = form.querySelector('input[name="rsvp-side"]:checked');
+        /** @type {"groom" | "bride" | null} */
+        const side =
+            sideInput instanceof HTMLInputElement && (sideInput.value === "groom" || sideInput.value === "bride")
+                ? sideInput.value
+                : null;
+
+        if (side === null) {
+            if (sideFieldset instanceof HTMLElement) {
+                sideFieldset.classList.add("rsvp-form__side--error");
+            }
+            showStatus("Խնդրում ենք ընտրել՝ Հարսիկի կողմ, թե Փեսայի կողմ։", "error");
+            return;
+        }
+
         /** @type {string[]} */
         const names = [];
         /** @type {boolean} */
@@ -417,13 +450,16 @@ function wireRsvpForm(googleSheetUrl) {
         setFormDisabled(true);
         submitBtn.textContent = "Ուղարկվում է…";
 
+        const targetUrl = side === "groom" ? sheetUrls.groom : sheetUrls.bride;
+
         try {
-            await fetch(googleSheetUrl, {
+            await fetch(targetUrl, {
                 method: "POST",
                 mode: "no-cors",
                 body: new URLSearchParams({
                     guests: JSON.stringify(names),
-                    timestamp: new Date().toISOString()
+                    timestamp: new Date().toISOString(),
+                    side
                 })
             });
 
@@ -571,7 +607,7 @@ function initInvitationPage() {
     applyStaticHero(INVITATION_CONFIG);
     renderSchedule(INVITATION_CONFIG.scheduleItems);
     document.getElementById("locations")?.remove();
-    wireRsvpForm(INVITATION_CONFIG.rsvpGoogleSheetUrl);
+    wireRsvpForm(INVITATION_CONFIG.rsvpGoogleSheetUrls);
     startCountdown(targetDate);
 
     if (typeof INVITATION_CONFIG.audioSrc === "string") {
