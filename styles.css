@@ -521,6 +521,7 @@ body {
     width: 100%;
     height: auto;
     object-fit: cover;
+    object-position: 65% 50%;
     aspect-ratio: 4 / 5.475;
     transition: transform 0.4s ease;
 }
