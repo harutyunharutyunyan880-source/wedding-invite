@@ -495,7 +495,7 @@ body {
 .gallery-marquee__track {
     display: flex;
     width: max-content;
-    animation: gallery-marquee-step 22s ease-in-out infinite;
+    animation: gallery-marquee-step 15s ease-in-out infinite;
 }
 
 .gallery-marquee__group {
