@@ -24,6 +24,7 @@
 
 html {
     scroll-behavior: smooth;
+    color-scheme: light;
 }
 
 body {
@@ -170,9 +171,6 @@ body {
     border: 0;
     border-radius: 0;
     box-shadow: none;
-    /* Brighten before multiply so ink is not too heavy; whites stay near 255 for a clean edge. */
-    filter: brightness(1.11);
-    mix-blend-mode: multiply;
 }
 
 /* ── Divider Lines ── */
