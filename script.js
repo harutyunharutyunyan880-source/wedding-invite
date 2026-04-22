@@ -26,7 +26,7 @@ const INVITATION_CONFIG = {
     },
     heroImageSrc: "assets/images/hero.jpg",
     heroInvitationText:
-        "Սիրով հրավիրումենք Ձեզ մեր հարսանիքին, և ուրախ կլինենք, եթե այս երջանիկ օրը անցկացնեք մեզ հետ՝ նվիրելով Ձեր ներկայությունը։",
+        "Սիրով հրավիրումենք Ձեզ մեր հարսանիքին և ուրախ կլինենք, եթե այս երջանիկ օրն անցկացնեք մեզ հետ՝ նվիրելով Ձեր ներկայությունը։",
     heroCalendarImageSrc: "assets/images/օրացույց.jpg",
     eventDate: {
         year: 2026,
@@ -37,15 +37,15 @@ const INVITATION_CONFIG = {
     scheduleItems: [
         {
             timeLabel: "16:00",
-            title: "Պսակադրություն",
-            description: "Լիաննա Գարդեն Հոլի շրջակա այգի։",
+            title: "Պսակադրություն`",
+            description: "Լիաննա Գարդեն Հոլ այգում։",
             yandexMapUrl:
                 "https://yandex.com/maps/org/75872747374/?ll=44.391408%2C40.164666&z=17",
             timeIconSrc: "assets/images/schedule-rings.png"
         },
         {
             timeLabel: "17:30",
-            title: "Հարսանյաց Հանդես",
+            title: "Հարսանյաց Հանդես`",
             description: "Լիաննա Գարդեն Հոլ ռեստորան։",
             yandexMapUrl:
                 "https://yandex.com/maps/org/75872747374/?ll=44.391408%2C40.164666&z=17",
