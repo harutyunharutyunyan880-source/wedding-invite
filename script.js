@@ -32,7 +32,7 @@ const INVITATION_CONFIG = {
         year: 2026,
         month: 6,
         day: 5,
-        clock: { hour: 15, minute: 0 }
+        clock: { hour: 0, minute: 0 }
     },
     scheduleItems: [
         {
