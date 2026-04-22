@@ -528,7 +528,7 @@ body {
     transform: scale(1.05);
 }
 
-/* Կարճ շարժում, երկար դադար; վեց քայլ = մեկ կռքնօռինակ շարք (-50%)։ */
+/* Կարճ շարժում, երկար դադար; հինգ քայլ = մեկ կռքնօռինակ շարք (-50%)։ */
 @keyframes gallery-marquee-step {
     0%,
     14.583% {
@@ -536,24 +536,21 @@ body {
     }
     16.667%,
     31.25% {
-        transform: translateX(calc(-50% / 6));
+        transform: translateX(calc(-50% / 5));
     }
     33.333%,
     47.917% {
-        transform: translateX(calc(-50% / 6 * 2));
+        transform: translateX(calc(-50% / 5 * 2));
     }
     50%,
     64.583% {
-        transform: translateX(calc(-50% / 6 * 3));
+        transform: translateX(calc(-50% / 5 * 3));
     }
     66.667%,
     81.25% {
-        transform: translateX(calc(-50% / 6 * 4));
+        transform: translateX(calc(-50% / 5 * 4));
     }
     83.333%,
-    97.917% {
-        transform: translateX(calc(-50% / 6 * 5));
-    }
     100% {
         transform: translateX(-50%);
     }
